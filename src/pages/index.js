@@ -8,10 +8,10 @@ import {
   TabPanels,
   HStack,
 } from "@chakra-ui/react"
-import Bio from "../components/bio"
-import Layout from "../components/layout"
-import Seo from "../components/seo"
-
+import Bio from "../components/Bio"
+import { Layout } from "../components/Layout"
+import Seo from "../components/SEO"
+import { Sidebar } from "../components/Sidebar/Sidebar"
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
   const posts = data.allMarkdownRemark.nodes
@@ -66,21 +66,7 @@ const BlogIndex = ({ data, location }) => {
             )
           })}
         </ol>
-        <Tabs>
-          <TabList>
-            <Tab>Manhwa</Tab>
-            <Tab>Songs</Tab>
-          </TabList>
-
-          <TabPanels>
-            <TabPanel>
-              <p>one!</p>
-            </TabPanel>
-            <TabPanel>
-              <p>two!</p>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+       <Sidebar />
       </HStack>
     </Layout>
   )

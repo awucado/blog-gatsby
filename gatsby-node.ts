@@ -13,9 +13,6 @@ import { getAnilist, getSpotifyTracks } from "./fetcher"
 // Define the template for blog post
 const blogPost = path.resolve(`./src/templates/blog-post.js`)
 
-/**
- * @type {import('gatsby').GatsbyNode['createPages']}
- */
 export const createPages: GatsbyNode["createPages"] = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
