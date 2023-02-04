@@ -8,8 +8,16 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "dependencies": {
+    "@chakra-ui/gatsby-plugin": "^3.1.1",
+    "@chakra-ui/react": "^2.4.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@fontsource/merriweather": "^4.5.14",
     "@fontsource/montserrat": "^4.5.14",
+    "@netlify/functions": "^1.4.0",
+    "@netlify/plugin-gatsby": "^3.5.1",
+    "dotenv": "^16.0.3",
+    "framer-motion": "^9.0.1",
     "gatsby": "^5.5.0",
     "gatsby-plugin-feed": "^5.5.0",
     "gatsby-plugin-image": "^3.5.0",
@@ -21,6 +29,7 @@
     "gatsby-source-filesystem": "^5.5.0",
     "gatsby-transformer-remark": "^6.5.0",
     "gatsby-transformer-sharp": "^5.5.0",
+    "node-fetch": "^2.6.9",
     "prismjs": "^1.29.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"

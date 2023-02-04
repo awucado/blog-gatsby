@@ -4,8 +4,11 @@
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
  */
 
-const path = require(`path`)
-const { createFilePath } = require(`gatsby-source-filesystem`)
+import "dotenv/config";
+import path from "path";
+import { createFilePath } from "gatsby-source-filesystem";
+import { GatsbyNode } from "gatsby"
+import { getAnilist, getSpotifyTracks } from "./fetcher"
 
 // Define the template for blog post
 const blogPost = path.resolve(`./src/templates/blog-post.js`)
@@ -13,7 +16,7 @@ const blogPost = path.resolve(`./src/templates/blog-post.js`)
 /**
  * @type {import('gatsby').GatsbyNode['createPages']}
  */
-exports.createPages = async ({ graphql, actions, reporter }) => {
+export const createPages: GatsbyNode["createPages"] = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
   // Get all markdown blog posts sorted by date
@@ -62,10 +65,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['onCreateNode']}
- */
-exports.onCreateNode = ({ node, actions, getNode }) => {
+export const onCreateNode: GatsbyNode["onCreateNode"] = ({
+  node,
+  actions,
+  getNode,
+}) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `MarkdownRemark`) {
@@ -79,10 +83,8 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['createSchemaCustomization']}
- */
-exports.createSchemaCustomization = ({ actions }) => {
+
+export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({ actions }) => {
   const { createTypes } = actions
 
   // Explicitly define the siteMetadata {} object
@@ -122,4 +124,48 @@ exports.createSchemaCustomization = ({ actions }) => {
       slug: String
     }
   `)
+}
+
+export const sourceNodes: GatsbyNode["sourceNodes"] = async ({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) => {
+  const [anilist, { tracks, likedTracks }] = await Promise.all([
+    getAnilist(),
+    getSpotifyTracks(),
+  ])
+  actions.createNode({
+    ...anilist,
+    id: createNodeId("user-information-anilist"),
+    internal: {
+      type: "Anilist",
+      contentDigest: createContentDigest(anilist),
+    },
+  })
+  if (tracks && likedTracks) {
+    const spotifyTopTracksId = createNodeId(
+      "user-information-spotify-top-tracks"
+    )
+    actions.createNode({
+      tracks: tracks,
+      id: spotifyTopTracksId,
+      internal: {
+        type: "SpotifyTopTracks",
+        contentDigest: createContentDigest(tracks),
+      },
+    })
+
+    const spotifyLikedTracksId = createNodeId(
+      "user-information-spotify-liked-tracks"
+    )
+    actions.createNode({
+      tracks: likedTracks,
+      id: spotifyLikedTracksId,
+      internal: {
+        type: "SpotifyLikedTracks",
+        contentDigest: createContentDigest(likedTracks),
+      },
+    })
+  }
 }
