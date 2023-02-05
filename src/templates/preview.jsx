@@ -120,44 +120,44 @@ export default function PostPreview(props) {
   )
 }
 
-// export const query = graphql`
-//   fragment CoverStatic on File {
-//     image: childImageSharp {
-//       gatsbyImageData(quality: 90, layout: FULL_WIDTH)
-//     }
-//   }
+export const query = graphql`
+  fragment CoverStatic on File {
+    image: childImageSharp {
+      gatsbyImageData(quality: 90, layout: FULL_WIDTH)
+    }
+  }
 
-//   query PreviewPage($slug: String!) {
-//     mdx(fields: { slug: { eq: $slug } }) {
-//       id
-//       excerpt(pruneLength: 160)
-//       body
-//       fields {
-//         readingTime {
-//           text
-//         }
-//       }
-//       frontmatter {
-//         draft
-//         title
-//         tags
-//         date(formatString: "MMMM DD, YYYY")
-//         description
-//         thumbnail {
-//           objectPosition
-//           src {
-//             image: childImageSharp {
-//               gatsbyImageData(quality: 100, height: 600, layout: CONSTRAINED)
-//             }
-//           }
-//         }
-//         imageTop {
-//           src {
-//             ...CoverStatic
-//           }
-//           opacity
-//         }
-//       }
-//     }
-//   }
-// `
+  query PreviewPage($slug: String!) {
+    mdx(fields: { slug: { eq: $slug } }) {
+      id
+      excerpt(pruneLength: 160)
+      body
+      fields {
+        readingTime {
+          text
+        }
+      }
+      frontmatter {
+        draft
+        title
+        tags
+        date(formatString: "MMMM DD, YYYY")
+        description
+        thumbnail {
+          objectPosition
+          src {
+            image: childImageSharp {
+              gatsbyImageData(quality: 100, height: 600, layout: CONSTRAINED)
+            }
+          }
+        }
+        imageTop {
+          src {
+            ...CoverStatic
+          }
+          opacity
+        }
+      }
+    }
+  }
+`

@@ -81,7 +81,7 @@ const config: GatsbyConfig = {
         icon: `content/assets/xetera.png`,
       },
     },
-    "gatsby-plugin-open-graph-images",
+    //"gatsby-plugin-open-graph-images",
     {
       resolve: "gatsby-plugin-webpack-bundle-analyser-v2",
       options: { devMode: process.env.ANALYZE === "true" },

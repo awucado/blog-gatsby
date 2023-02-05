@@ -80,15 +80,15 @@ export const onCreatePage: GatsbyNode["onCreatePage"] = async props => {
       ...newPage,
       context: {
         ...newPage.context,
-        ogImage: createOpenGraphImage(actions.createPage, {
-          path: previewPath,
-          component: staticPagePreview,
-          size: postPreviewDimensions,
-          context: {
-            title,
-            description,
-          },
-        }),
+        // ogImage: createOpenGraphImage(actions.createPage, {
+        //   path: previewPath,
+        //   component: staticPagePreview,
+        //   size: postPreviewDimensions,
+        //   context: {
+        //     title,
+        //     description,
+        //   },
+        // }),
       },
     })
   }
@@ -163,12 +163,12 @@ export const createPages: GatsbyNode["createPages"] = async ({
         ...context,
         id: post.node.id,
         slug,
-        ogImage: createOpenGraphImage(createPage, {
-          path: previewPath,
-          component: blogPostPreview,
-          size: postPreviewDimensions,
-          context,
-        }),
+        // ogImage: createOpenGraphImage(createPage, {
+        //   path: previewPath,
+        //   component: blogPostPreview,
+        //   size: postPreviewDimensions,
+        //   context,
+        // }),
       },
     })
   })
