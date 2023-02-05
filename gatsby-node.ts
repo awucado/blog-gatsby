@@ -7,11 +7,11 @@ import { getAnilist, getSpotifyTracks } from "./fetcher"
 import { GatsbyNode } from "gatsby"
 
 const blogPostPreview = path.resolve(
-  path.join(__dirname, "./src/templates/preview.jsx")
+  "./src/templates/preview.jsx"
 )
-
+console.log(blogPostPreview)
 const staticPagePreview = path.resolve(
-  path.join(__dirname, "./src/templates/static-preview.jsx")
+  "./src/templates/static-preview.jsx"
 )
 
 export const sourceNodes: GatsbyNode["sourceNodes"] = async ({
@@ -101,7 +101,7 @@ export const createPages: GatsbyNode["createPages"] = async ({
   const { createPage } = actions
 
   const blogPost = path.resolve(
-    path.join(__dirname, "./src/templates/post.jsx")
+     "./src/templates/post.jsx"
   )
   const result = await graphql(
     `
@@ -112,6 +112,7 @@ export const createPages: GatsbyNode["createPages"] = async ({
         ) {
           edges {
             node {
+              id
               fields {
                 slug
               }
@@ -154,11 +155,13 @@ export const createPages: GatsbyNode["createPages"] = async ({
 
     const previewPath = `/${slug.replace(/\//g, "")}/thumbnail.png`
 
+    console.log(post)
     createPage({
       path: slug,
       component: blogPost,
       context: {
         ...context,
+        id: post.node.id,
         slug,
         ogImage: createOpenGraphImage(createPage, {
           path: previewPath,
@@ -188,12 +191,12 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = ({
   }
 }
 
-// export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({
-//   actions,
-// }) => {
-//   actions.setWebpackConfig({
-//     resolve: {
-//       modules: [path.resolve(__dirname, "src"), "node_modules"],
-//     },
-//   })
-// }
+export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({
+  actions,
+}) => {
+  actions.setWebpackConfig({
+    resolve: {
+      modules: [path.resolve(__dirname, "src"), "node_modules"],
+    },
+  })
+}

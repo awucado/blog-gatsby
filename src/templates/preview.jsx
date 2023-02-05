@@ -13,7 +13,7 @@ import { Tag } from "@chakra-ui/tag"
 import { postPreviewDimensions } from "../shared"
 import { GatsbyImage } from "gatsby-plugin-image"
 import { XeteraLarge } from "../components/Avatars"
-
+import { DisableNavbar } from "./disable-spotify"
 export default function PostPreview(props) {
   const data = props.data.mdx
   const { thumbnail = {} } = data.frontmatter
@@ -26,6 +26,7 @@ export default function PostPreview(props) {
       width={`${postPreviewDimensions.width}px`}
       height={`${postPreviewDimensions.height}px`}
     >
+      <DisableNavbar />
       {data.frontmatter.imageTop && (
         <GatsbyImage
           width="100%"

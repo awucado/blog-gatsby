@@ -7,6 +7,16 @@ import formatDistance from "date-fns/formatDistance"
 //   return word.replace(/\s+/g, "-")
 // }
 
+function truncateString(str, num) {
+  // If the length of str is less than or equal to num
+  // just return str--don't truncate it.
+  if (str.length <= num) {
+    return str
+  }
+  // Return str truncated with '...' concatenated to the end of str.
+  return str.slice(0, num) + "..."
+}
+
 export function Book(props) {
   console.log(props)
   const link = `https://anilist.co/manga/` + props.media.id
@@ -69,7 +79,7 @@ export function Book(props) {
             background="bgPrimary"
             transform="rotate(45deg) translateY(-14px) translateX(41px)"
           >
-            {props.status}
+            {props.media.startDate.year}
           </Text>
           {/* <Box
             transition="all 0.2s"
@@ -110,12 +120,16 @@ export function Book(props) {
           <Text fontWeight="medium" fontSize={["sm", "md"]} color="text.100">
             {props.media.title.english}
           </Text>
-          <Text fontSize={["sm", "medium"]} color="text.300">
-            {props.media.startDate.year}
+          <Text
+            fontSize={["sm", "medium"]}
+            color="text.300"
+            noOfLines={5}
+          >
+            {props.media.description}
           </Text>
           <Text fontSize="sm" mt="auto" color="text.500">
             Last read{" "}
-            {formatDistance(new Date(props.updatedAt*1000), new Date(), {
+            {formatDistance(new Date(props.updatedAt * 1000), new Date(), {
               addSuffix: true,
             })}
           </Text>
@@ -171,6 +185,7 @@ const QUERY = graphql`
             updatedAt
             progress
             media {
+              description
               id
               startDate {
                 year

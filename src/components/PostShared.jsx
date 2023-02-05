@@ -49,7 +49,7 @@ export function PostList({ node }) {
         <PostHead
           mb={3}
           date={distance}
-          //readingTime={node.fields.readingTime.text}
+          readingTime={node.fields.readingTime.text}
         />
         <Heading
           as="h2"

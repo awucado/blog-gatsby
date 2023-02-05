@@ -1,6 +1,5 @@
 import React from "react"
 import { graphql } from "gatsby"
-import Bio from "../components/Bio"
 import { PostList } from "../components/PostShared"
 import { Layout, LayoutContent, StackedSection } from "../components/Layout"
 import { Flex, Grid, Stack, Text, Link } from "@chakra-ui/layout"
@@ -25,7 +24,6 @@ const BlogIndex = ({ data, pageContext }) => {
       <Helmet>
         <title>{data.site.siteMetadata.title}</title>
       </Helmet>
-      <Bio />
       <LayoutContent
         gridAutoFlow="row"
         gridTemplateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
@@ -98,6 +96,9 @@ export const pageQuery = graphql`
         node {
           excerpt
           fields {
+            readingTime {
+              text
+            }
             slug
           }
           frontmatter {

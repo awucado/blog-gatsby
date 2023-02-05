@@ -60,7 +60,7 @@ const config: GatsbyConfig = {
     },
 
     "gatsby-plugin-twitter",
-    //"gatsby-remark-reading-time",
+    "gatsby-remark-reading-time",
     `gatsby-transformer-sharp`,
     {
       resolve: `gatsby-plugin-sharp`,
@@ -82,10 +82,10 @@ const config: GatsbyConfig = {
       },
     },
     "gatsby-plugin-open-graph-images",
-    // {
-    //   resolve: "gatsby-plugin-webpack-bundle-analyser-v2",
-    //   options: { devMode: process.env.ANALYZE === "true" },
-    // },
+    {
+      resolve: "gatsby-plugin-webpack-bundle-analyser-v2",
+      options: { devMode: process.env.ANALYZE === "true" },
+    },
     {
       resolve: `gatsby-plugin-feed`,
       options: {

@@ -108,16 +108,19 @@ function makeHeader(type, { fonts = ["xl", null, "2xl"], ...rest } = {}) {
   )
 }
 
-export default function Post(props) {
-  const { data, pageContext } = props
-  const post = data.mdx
-  const { previous, next, ogImage } = pageContext
-  const { imageTop, imageBottom } = post.frontmatter
-  const isDraft = post.frontmatter.draft
-  const distance = formatDistance(new Date(post.frontmatter.date), new Date(), {
-    addSuffix: true,
-  })
-
+export default function PageTemplate(props) {
+    const { data, pageContext } = props
+    const post = data.mdx
+    const { previous, next, ogImage } = pageContext
+    const { imageTop, imageBottom } = post.frontmatter
+    const isDraft = post.frontmatter.draft
+    const distance = formatDistance(
+      new Date(post.frontmatter.date),
+      new Date(),
+      {
+        addSuffix: true,
+      }
+    )
   return (
     <>
       <Layout imageTop={imageTop} imageBottom={imageBottom}>
@@ -145,6 +148,10 @@ export default function Post(props) {
                 >
                   {isDraft && "Draft"} Article
                 </Box>
+                <Box mx={3} as="span">
+                  —
+                </Box>
+                {post.fields.readingTime.text}
               </Text>
               <Heading
                 as="h1"
@@ -345,6 +352,7 @@ export default function Post(props) {
     </>
   )
 }
+
 export const pageQuery = graphql`
   fragment Cover on File {
     image: childImageSharp {
@@ -368,6 +376,9 @@ export const pageQuery = graphql`
       body
       fields {
         slug
+        readingTime {
+          text
+        }
       }
       frontmatter {
         draft

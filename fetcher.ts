@@ -74,6 +74,7 @@ export async function getAnilist() {
               progress
               media {
                 id
+                description
                 startDate {
                   year
                 }
