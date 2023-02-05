@@ -1,10 +1,3 @@
-// custom typefaces
-import "@fontsource/montserrat/variable.css"
-import "@fontsource/merriweather"
-// normalize CSS across browsers
-import "./src/normalize.css"
-// custom CSS styles
-import "./src/style.css"
-
-// Highlighting for code blocks
-import "prismjs/themes/prism.css"
+import "./static/fonts/wotfard/stylesheet.css"
+import { wrapRootElement } from "./src/wrappers/gatsby"
+export { wrapRootElement }

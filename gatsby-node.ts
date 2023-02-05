@@ -1,127 +1,18 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
- */
-
-import "dotenv/config";
-import path from "path";
-import { createFilePath } from "gatsby-source-filesystem";
-import { GatsbyNode } from "gatsby"
+import "dotenv/config"
+import path from "path"
+import { createFilePath } from "gatsby-source-filesystem"
+import { createOpenGraphImage } from "gatsby-plugin-open-graph-images"
+import { postPreviewDimensions } from "./src/shared"
 import { getAnilist, getSpotifyTracks } from "./fetcher"
+import { GatsbyNode } from "gatsby"
 
-// Define the template for blog post
-const blogPost = path.resolve(`./src/templates/blog-post.js`)
+const blogPostPreview = path.resolve(
+  path.join(__dirname, "./src/templates/preview.jsx")
+)
 
-export const createPages: GatsbyNode["createPages"] = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions
-
-  // Get all markdown blog posts sorted by date
-  const result = await graphql(`
-    {
-      allMarkdownRemark(sort: { frontmatter: { date: ASC } }, limit: 1000) {
-        nodes {
-          id
-          fields {
-            slug
-          }
-        }
-      }
-    }
-  `)
-
-  if (result.errors) {
-    reporter.panicOnBuild(
-      `There was an error loading your blog posts`,
-      result.errors
-    )
-    return
-  }
-
-  const posts = result.data.allMarkdownRemark.nodes
-
-  // Create blog posts pages
-  // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
-  // `context` is available in the template as a prop and as a variable in GraphQL
-
-  if (posts.length > 0) {
-    posts.forEach((post, index) => {
-      const previousPostId = index === 0 ? null : posts[index - 1].id
-      const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
-
-      createPage({
-        path: post.fields.slug,
-        component: blogPost,
-        context: {
-          id: post.id,
-          previousPostId,
-          nextPostId,
-        },
-      })
-    })
-  }
-}
-
-export const onCreateNode: GatsbyNode["onCreateNode"] = ({
-  node,
-  actions,
-  getNode,
-}) => {
-  const { createNodeField } = actions
-
-  if (node.internal.type === `MarkdownRemark`) {
-    const value = createFilePath({ node, getNode })
-
-    createNodeField({
-      name: `slug`,
-      node,
-      value,
-    })
-  }
-}
-
-
-export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({ actions }) => {
-  const { createTypes } = actions
-
-  // Explicitly define the siteMetadata {} object
-  // This way those will always be defined even if removed from gatsby-config.js
-
-  // Also explicitly define the Markdown frontmatter
-  // This way the "MarkdownRemark" queries will return `null` even when no
-  // blog posts are stored inside "content/blog" instead of returning an error
-  createTypes(`
-    type SiteSiteMetadata {
-      author: Author
-      siteUrl: String
-      social: Social
-    }
-
-    type Author {
-      name: String
-      summary: String
-    }
-
-    type Social {
-      twitter: String
-    }
-
-    type MarkdownRemark implements Node {
-      frontmatter: Frontmatter
-      fields: Fields
-    }
-
-    type Frontmatter {
-      title: String
-      description: String
-      date: Date @dateformat
-    }
-
-    type Fields {
-      slug: String
-    }
-  `)
-}
+const staticPagePreview = path.resolve(
+  path.join(__dirname, "./src/templates/static-preview.jsx")
+)
 
 export const sourceNodes: GatsbyNode["sourceNodes"] = async ({
   actions,
@@ -166,3 +57,143 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async ({
     })
   }
 }
+
+const staticPreviewMapping: Record<
+  string,
+  () => { title: string; description: string }
+> = {
+  "/": () => ({
+    title: "It's me Xetera.",
+    description: "I'm a developer I guess",
+  }),
+}
+
+export const onCreatePage: GatsbyNode["onCreatePage"] = async props => {
+  const { actions, page } = props
+  const fetcher = staticPreviewMapping[page.path]
+  if (fetcher) {
+    const { title, description } = fetcher()
+    const newPage = { ...page }
+    const previewPath = `${page.path.replace(/\/{1,}/g, "/")}thumbnail.png`
+    actions.deletePage(page)
+    actions.createPage({
+      ...newPage,
+      context: {
+        ...newPage.context,
+        ogImage: createOpenGraphImage(actions.createPage, {
+          path: previewPath,
+          component: staticPagePreview,
+          size: postPreviewDimensions,
+          context: {
+            title,
+            description,
+          },
+        }),
+      },
+    })
+  }
+}
+
+export const createPages: GatsbyNode["createPages"] = async ({
+  graphql,
+  actions,
+}) => {
+  const { createPage } = actions
+
+  const blogPost = path.resolve(
+    path.join(__dirname, "./src/templates/post.jsx")
+  )
+  const result = await graphql(
+    `
+      {
+        allMdx(
+          sort: { fields: [frontmatter___date], order: DESC }
+          limit: 1000
+        ) {
+          edges {
+            node {
+              fields {
+                slug
+              }
+              frontmatter {
+                draft
+                title
+              }
+            }
+          }
+        }
+      }
+    `
+  )
+
+  if (result.errors) {
+    throw result.errors
+  }
+
+  // Create blog posts pages.
+  const posts = result.data.allMdx.edges
+
+  // sometimes there are drafts that we don't want to display
+  // so the next post needs to be one that isn't a draft
+  const findNonDraft = nodes =>
+    nodes.find(node => !node.node.frontmatter.draft)?.node ?? null
+
+  posts.forEach(async (post, index) => {
+    const previousNodes = posts.slice(index + 1)
+
+    const previous = findNonDraft(previousNodes)
+    const nextNodes = posts.slice(0, index)
+    const next = findNonDraft(nextNodes.reverse())
+
+    const { slug } = post.node.fields
+    const context = {
+      slug,
+      previous,
+      next,
+    }
+
+    const previewPath = `/${slug.replace(/\//g, "")}/thumbnail.png`
+
+    createPage({
+      path: slug,
+      component: blogPost,
+      context: {
+        ...context,
+        slug,
+        ogImage: createOpenGraphImage(createPage, {
+          path: previewPath,
+          component: blogPostPreview,
+          size: postPreviewDimensions,
+          context,
+        }),
+      },
+    })
+  })
+}
+
+export const onCreateNode: GatsbyNode["onCreateNode"] = ({
+  node,
+  actions,
+  getNode,
+}) => {
+  const { createNodeField } = actions
+  console.log(node.internal.type)
+  if (node.internal.type === `Mdx`) {
+    const value = createFilePath({ node, getNode })
+    createNodeField({
+      name: `slug`,
+      node,
+      value,
+    })
+  }
+}
+
+// export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({
+//   actions,
+// }) => {
+//   actions.setWebpackConfig({
+//     resolve: {
+//       modules: [path.resolve(__dirname, "src"), "node_modules"],
+//     },
+//   })
+// }

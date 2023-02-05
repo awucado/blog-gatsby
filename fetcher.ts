@@ -69,8 +69,8 @@ export async function getAnilist() {
         mangaList: MediaListCollection(userName: "theonlylevelupper28", type:MANGA, status_not_in:[PLANNING, DROPPED, REPEATING, PAUSED]) {
           lists {
             name
-            updatedAt
             entries {
+              updatedAt
               progress
               media {
                 id
@@ -83,7 +83,6 @@ export async function getAnilist() {
                 title {
                   english
                 }
-               
               }
             }
           }

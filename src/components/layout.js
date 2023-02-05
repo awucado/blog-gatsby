@@ -1,40 +1,57 @@
-import * as React from "react"
-import { Link } from "gatsby"
+import React from "react"
+import { Box, Stack, Flex, Grid } from "@chakra-ui/layout"
 import { forwardRef } from "@chakra-ui/system"
-import { Stack } from "@chakra-ui/layout"
+import { transition } from "../data/theme"
+import { ToastContext } from "../data/providers"
 
-export const Layout = ({ location, title, children }) => {
-  const rootPath = `${__PATH_PREFIX__}/`
-  const isRootPath = location.pathname === rootPath
-  let header
-
-  if (isRootPath) {
-    header = (
-      <h1 className="main-heading">
-        <Link to="/">{title}</Link>
-      </h1>
-    )
-  } else {
-    header = (
-      <Link className="header-link-home" to="/">
-        {title}
-      </Link>
-    )
-  }
-
+export const Hr = forwardRef((props, ref) => {
   return (
-    <div className="global-wrapper" data-is-root-path={isRootPath}>
-      <header className="global-header">{header}</header>
-      <main>{children}</main>
-      <footer>
-        © {new Date().getFullYear()}, Built with
-        {` `}
-        <a href="https://www.gatsbyjs.com">Gatsby</a>
-      </footer>
-    </div>
+    <Box
+      as="hr"
+      my={3}
+      transition={transition}
+      background="borderSubtle"
+      border="none"
+      height="1px"
+      {...props}
+      ref={ref}
+    />
+  )
+})
+
+export const layoutContentPadding = [6, 8]
+
+export const LayoutContent = forwardRef((props, ref) => {
+  return (
+    <Box width="100%">
+      <Grid
+        as="main"
+        color="text.100"
+        fontWeight="normal"
+        gap={12}
+        ref={ref}
+        {...props}
+      >
+        {props.children}
+      </Grid>
+    </Box>
+  )
+})
+
+export function Layout({
+  children,
+  header,
+  imageTop,
+  imageBottom,
+  article,
+  ...rest
+}) {
+  return (
+    <Flex flexFlow="column nowrap" p={6}>
+      <Box>{children}</Box>
+    </Flex>
   )
 }
-
 
 export const StackedSection = forwardRef(({ children, ...rest }, ref) => {
   return (

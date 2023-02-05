@@ -2,11 +2,6 @@ import { extendTheme } from "@chakra-ui/react"
 import mapValues from "lodash/mapValues"
 import { colors } from "./color"
 
-/**
- *
- * @param theme
- * @returns {function(*, *?): *}
- */
 const themePicker = theme => (input, key) => {
   const nested = !("dark" in input) && !("light" in input)
   if (nested) {

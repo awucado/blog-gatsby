@@ -3,9 +3,9 @@ import { Box, Flex, Grid, Image, Tag, Text } from "@chakra-ui/react"
 import { graphql, Link, useStaticQuery } from "gatsby"
 import formatDistance from "date-fns/formatDistance"
 
-function skewer(word) {
-  return word.replace(/\s+/g, "-")
-}
+// function skewer(word) {
+//   return word.replace(/\s+/g, "-")
+// }
 
 export function Book(props) {
   console.log(props)
@@ -167,8 +167,8 @@ const QUERY = graphql`
       mangaList {
         lists {
           name
-          updatedAt
           entries {
+            updatedAt
             progress
             media {
               id

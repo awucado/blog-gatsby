@@ -1,85 +1,87 @@
-import * as React from "react"
-import { Link, graphql } from "gatsby"
-import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  TabPanels,
-  HStack,
-} from "@chakra-ui/react"
+import React from "react"
+import { graphql } from "gatsby"
 import Bio from "../components/Bio"
-import { Layout } from "../components/Layout"
-import Seo from "../components/SEO"
+import { PostList } from "../components/PostShared"
+import { Layout, LayoutContent, StackedSection } from "../components/Layout"
+import { Flex, Grid, Stack, Text, Link } from "@chakra-ui/layout"
+import { Helmet } from "react-helmet"
+import SEO from "../components/Seo"
+import { RiGithubFill, RiRssFill } from "react-icons/ri"
+import { SpotifyLikedSongs } from "../components/Music/SpotifyLikedSongs"
+import { SectionHeader } from "../components/Typography"
 import { Sidebar } from "../components/Sidebar/Sidebar"
-const BlogIndex = ({ data, location }) => {
-  const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMarkdownRemark.nodes
 
-  if (posts.length === 0) {
-    return (
-      <Layout location={location} title={siteTitle}>
-        <Bio />
-        <p>
-          No blog posts found. Add markdown posts to "content/blog" (or the
-          directory you specified for the "gatsby-source-filesystem" plugin in
-          gatsby-config.js).
-        </p>
-      </Layout>
-    )
-  }
-
+const BlogIndex = ({ data, pageContext }) => {
+  const posts = data.allMdx.edges
   return (
-    <Layout location={location} title={siteTitle}>
+    <Layout
+      display="flex"
+      flexDirection="column"
+      maxWidth="1200px"
+      margin={["0 auto", null, "5% auto"]}
+      gap={{ base: 6, md: 10, lg: 24 }}
+    >
+      <SEO canonical="/" image={pageContext.ogImage} />
+      <Helmet>
+        <title>{data.site.siteMetadata.title}</title>
+      </Helmet>
       <Bio />
-
-      <HStack alignItems="top" gap={16}>
-        <ol style={{ listStyle: `none` }}>
-          {posts.map(post => {
-            const title = post.frontmatter.title || post.fields.slug
-
-            return (
-              <li key={post.fields.slug}>
-                <article
-                  className="post-list-item"
-                  itemScope
-                  itemType="http://schema.org/Article"
-                >
-                  <header>
-                    <h2>
-                      <Link to={post.fields.slug} itemProp="url">
-                        <span itemProp="headline">{title}</span>
-                      </Link>
-                    </h2>
-                    <small>{post.frontmatter.date}</small>
-                  </header>
-                  <section>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: post.frontmatter.description || post.excerpt,
-                      }}
-                      itemProp="description"
-                    />
-                  </section>
-                </article>
-              </li>
-            )
-          })}
-        </ol>
-       <Sidebar />
-      </HStack>
+      <LayoutContent
+        gridAutoFlow="row"
+        gridTemplateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
+        gridTemplateAreas={{
+          base: `
+          "blog"
+          "spotify"
+        `,
+          lg: `
+            "blog blog spotify"
+          `,
+        }}
+      >
+        <StackedSection gridArea="blog" flex={1}>
+          <Flex
+            flexFlow="row"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+          >
+            <Flex alignItems="center">
+              <SectionHeader>{posts.length} Posts</SectionHeader>
+              <Link
+                color="text.300"
+                ml={2}
+                href="/rss.xml"
+                aria-label="Go to RSS feed"
+              >
+                <RiRssFill size={15} />
+              </Link>
+            </Flex>
+            <Flex alignItems="center">
+              <Link
+                color="text.300"
+                fontSize="xs"
+                mr={2}
+                href="https://github.com/xetera/xetera.dev"
+              >
+                View the site's code
+              </Link>
+              <RiGithubFill size={18} />
+            </Flex>
+          </Flex>
+          <Grid gap={10}>
+            {posts.map(({ node }) => (
+              <PostList node={node} key={node.fields.slug} />
+            ))}
+          </Grid>
+        </StackedSection>
+        <Sidebar />
+      </LayoutContent>
     </Layout>
   )
 }
 
 export default BlogIndex
-
-/**
- * Head export to define metadata for the page
- *
- * See: https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
- */
-export const Head = () => <Seo title="All posts" />
 
 export const pageQuery = graphql`
   {
@@ -88,16 +90,23 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
-      nodes {
-        excerpt
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          title
-          description
+    allMdx(
+      sort: { fields: [frontmatter___date], order: DESC }
+      filter: { frontmatter: { draft: { ne: true } } }
+    ) {
+      edges {
+        node {
+          excerpt
+          fields {
+            slug
+          }
+          frontmatter {
+            date(formatString: "MMMM D, YYYY")
+            rawDate: date
+            title
+            description
+            tags
+          }
         }
       }
     }
