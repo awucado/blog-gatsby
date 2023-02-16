@@ -39,6 +39,7 @@ const config: GatsbyConfig = {
     },
   },
   plugins: [
+    "remark-math",
     `gatsby-plugin-react-helmet`,
     {
       resolve: "gatsby-plugin-root-import",

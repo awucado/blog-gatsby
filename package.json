@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
-    "dependencies": {
+  "dependencies": {
     "@chakra-ui/gatsby-plugin": "^2.0.1",
     "@chakra-ui/react": "^2.4.6",
     "@chakra-ui/theme-tools": "^2.0.17",
@@ -68,6 +68,7 @@
     "react-use": "^17.2.4",
     "rehype-autolink-headings": "^5.1.0",
     "rehype-slug": "^4.0.1",
+    "remark-math": "^3.0.1",
     "typeface-sriracha": "^1.1.13"
   },
   "devDependencies": {

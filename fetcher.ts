@@ -66,7 +66,7 @@ export async function getAnilist() {
     body: JSON.stringify({
       query: `
        query UserQuery {
-        mangaList: MediaListCollection(userName: "theonlylevelupper28", type:MANGA, status_not_in:[PLANNING, DROPPED, REPEATING, PAUSED]) {
+        mangaList: MediaListCollection(userName: "awucado", type:MANGA, status_not_in:[PLANNING, DROPPED, REPEATING, PAUSED]) {
           lists {
             name
             entries {
