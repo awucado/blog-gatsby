@@ -26,18 +26,22 @@ const BlogIndex = ({ data, pageContext }) => {
       </Helmet>
       <LayoutContent
         gridAutoFlow="row"
-        gridTemplateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
-        gridTemplateAreas={{
-          base: `
-          "blog"
-          "spotify"
-        `,
-          lg: `
-            "blog blog spotify"
-          `,
-        }}
+        justifyContent="center"
+        //gridTemplateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
+        // gridTemplateAreas={{
+        //   base: `
+        //   "blog"
+        //   "spotify"
+        // `,
+        //   lg: `
+        //     "blog blog spotify"
+        //   `,
+        // }}
       >
-        <StackedSection gridArea="blog" flex={1}>
+        <StackedSection
+          //gridArea="blog"
+          flex={1}
+        >
           <Flex
             flexFlow="row"
             justifyContent="space-between"
@@ -73,7 +77,7 @@ const BlogIndex = ({ data, pageContext }) => {
             ))}
           </Grid>
         </StackedSection>
-        <Sidebar />
+        {/* <Sidebar /> */}
       </LayoutContent>
     </Layout>
   )

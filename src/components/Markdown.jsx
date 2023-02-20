@@ -17,7 +17,6 @@ import { VStack } from "@chakra-ui/layout"
 import { ThemeProvider } from "../data/providers"
 import { CenteredGrid } from "./CenteredGrid"
 import { StaticImage } from "gatsby-plugin-image"
-;(typeof global !== "undefined" ? global : window).Prism = Prism
 
 const sharedImageProps = {
   objectFit: "cover",
@@ -25,6 +24,19 @@ const sharedImageProps = {
 }
 
 const languageMappings = {
+  lua: {
+    className: "bg-yellow-700 text-yellow-100",
+    name: "Lua",
+    image: (
+      <StaticImage
+        {...sharedImageProps}
+        width={20}
+        height={20}
+        src="../../content/assets/tech/lua.png"
+        alt="lua"
+      />
+    ),
+  },
   js: {
     className: "bg-yellow-700 text-yellow-100",
     name: "Javascript",

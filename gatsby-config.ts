@@ -27,7 +27,7 @@ const themeColor = `#112130`
 
 const config: GatsbyConfig = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `awucado`,
     author: {
       name: `Kyle Mathews`,
       summary: `who lives and works in San Francisco building useful things.`,
@@ -51,15 +51,65 @@ const config: GatsbyConfig = {
 
     `gatsby-plugin-catch-links`,
     `gatsby-plugin-image`,
-    `gatsby-plugin-mdx`,
+
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/content/blog`,
-        name: `content`,
+        name: `blog`,
       },
     },
-
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/content/blog`,
+        name: `assets`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [".md", ".mdx"],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 1000,
+              backgroundColor: "transparent",
+              wrapperStyle: img => {
+                return `max-width: ${Math.min(img.presentationWidth, 1000)}px`
+              },
+              tracedSvg: true,
+              withWebp: {
+                quality: 95,
+              },
+            },
+          },
+          {
+            resolve: `gatsby-remark-responsive-iframe`,
+            options: {
+              wrapperStyle: `margin-bottom: 1.0725rem`,
+            },
+          },
+          {
+            resolve: "gatsby-remark-external-links",
+            options: {
+              target: "_blank",
+              rel: "nofollow noopener external",
+            },
+          },
+          `gatsby-remark-copy-linked-files`,
+          `gatsby-remark-smartypants`,
+        ],
+        rehypePlugins: [
+          // Generate heading ids for rehype-autolink-headings
+          require("rehype-slug"),
+          // To pass options, use a 2-element array with the
+          // configuration in an object in the second element
+          [require("rehype-autolink-headings"), { behavior: "wrap" }],
+        ],
+      },
+    },
     "gatsby-plugin-twitter",
     "gatsby-remark-reading-time",
     `gatsby-transformer-sharp`,

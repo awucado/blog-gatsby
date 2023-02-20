@@ -63,7 +63,7 @@ export function createTheme(theme) {
           fontSize: "0.85em",
           background: pick({
             light: "#e3e3e399",
-            dark: "#2b141d",
+            dark: "#353831",
           }),
           padding: "0 6px",
           lineHeight: "1.7",

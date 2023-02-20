@@ -65,8 +65,8 @@ export const baseColors = {
   },
   brand: {
     100: {
-      light: "#d3399c",
-      dark: "hsl(333deg, 100%, 45%)",
+      light: "#CE8147",
+      dark: "#6CC551",
     },
     80: {
       light: "hsl(333deg, 100%, 45%)",
@@ -112,7 +112,7 @@ export const colors = {
   },
   discordTextColor: { light: "#2e3338", dark: "#dcddde" },
   highlight: {
-    light: "yellow",
+    light: "#CE8147",
     dark: baseColors.brand[100].dark,
   },
 }
